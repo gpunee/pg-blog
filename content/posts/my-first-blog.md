@@ -1,7 +1,7 @@
 ---
-date = '2026-01-05T21:18:33-06:00'
-draft = true
-title = 'My First Blog'
+title: "My First Blog"
+date: 2026-01-05
+draft: false
 ---
 
 Welcome to my blog! 🎉  
