@@ -155,4 +155,3 @@ Java may not always be the most exciting language — but the ecosystem it enabl
 - **Part 3:** Java and the JVM Ecosystem
 
 Together, they tell the story of why Java continues to be relevant — not by standing still, but by evolving.
-
