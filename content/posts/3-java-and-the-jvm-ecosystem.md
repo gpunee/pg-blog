@@ -1,6 +1,6 @@
 ---
 title: "Java and the JVM Ecosystem: Kotlin, Scala, and Beyond"
-date: 2026-01-07
+date: 2026-01-06
 description: "Java is more than a language. Exploring the JVM ecosystem and how Kotlin, Scala, and other JVM languages extend Java’s capabilities."
 tags:
   - Java
