@@ -85,11 +85,7 @@ COPY app.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 ```
 
----
-
-## Containerization Simplifies Java Deployment
-
-Containerization has removed many of Java’s historical deployment challenges.
+Containerization has removed many of Java's historical deployment challenges: the same image runs identically on a laptop, in CI, and in production.
 
 ---
 
@@ -156,4 +152,8 @@ Today, Java is:
 - Cloud-native
 - Operationally mature
 
-For teams building scalable, long-lived distributed systems
+For teams building scalable, long-lived distributed systems, Java offers a rare combination: the maturity to run mission-critical workloads reliably, and the modern tooling — Spring Boot, Quarkus, Micronaut, GraalVM — to do so with the startup speed and small footprint that cloud economics demand.
+
+The cloud did not leave Java behind. Java met the cloud on its own terms — and remains one of the safest bets for systems that must still be running, and still be maintainable, a decade from now.
+
+*This is Part 2 of a series. See also Part 1, "Why Java Still Matters Today," and Part 3, "Java and the JVM Ecosystem."*

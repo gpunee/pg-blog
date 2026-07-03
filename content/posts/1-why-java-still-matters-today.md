@@ -52,17 +52,37 @@ Stability beats hype when systems must run **24/7 for decades**.
 If your mental model of Java stopped at Java 8, you’re missing out.
 
 ### Modern Java Features
-```java
-var users = List.of("Alice", "Bob", "Charlie");
 
-users.forEach(user -> 
-    System.out.println("Hello " + user)
-);
+Modern Java is concise, expressive, and safe. A single example touches several features that simply did not exist a few releases ago:
+
+```java
+// Records: immutable data carriers in one line
+record User(String name, int age) {}
+
+// Sealed types: a closed, exhaustive hierarchy
+sealed interface Payment permits Card, Cash {}
+record Card(String last4) implements Payment {}
+record Cash() implements Payment {}
+
+// Pattern matching in switch: exhaustive, no default needed
+String describe(Payment p) {
+    return switch (p) {
+        case Card c -> "Card ending " + c.last4();
+        case Cash ignored -> "Cash";
+    };
+}
+
+// Virtual threads (Project Loom): millions of cheap threads
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    executor.submit(() -> System.out.println("Hello from a virtual thread"));
+}
 ```
 
-# Java: A Comprehensive Comparison with Modern Programming Languages
+Records, sealed types, pattern matching, and virtual threads together move a lot of boilerplate and concurrency plumbing out of your hands — while keeping Java's hallmark type safety.
 
 Java follows a predictable six-month release cycle, allowing the language to evolve steadily without sacrificing long-term stability.
+
+---
 
 ## Java Compared with Modern Programming Trends
 
