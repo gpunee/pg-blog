@@ -1,4 +1,60 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://pg-blogs.netlify.app/'
 languageCode = 'en-us'
 title = 'PG Blog'
 theme = 'ananke'
+
+# Generate robots.txt (ananke's template allows crawl + emits the sitemap in production)
+enableRobotsTXT = true
+
+[params]
+  # Homepage/site-wide meta description and social fallback
+  description = "Practical, no-hype best practices for Java and Python developers — software engineering, architecture, DevOps, databases, and AI & agentic workflows."
+  author = "PG Blog"
+  # Which sections are "content" for lists, RSS, and recent posts
+  mainSections = ["posts"]
+  # Show reading time + word count on posts
+  show_reading_time = true
+  # Default social share image (created in static/images; see opengraph)
+  images = ["images/og-default.png"]
+
+  [params.ananke]
+    show_recent_posts = true
+    recent_posts_number = 5
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Posts"
+    url = "/posts/"
+    weight = 2
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 3
+
+[markup]
+  [markup.highlight]
+    # Self-contained inline styles so code renders correctly with no extra CSS
+    noClasses = true
+    style = "github"
+    guessSyntax = true
+    tabWidth = 2
+
+# --- Increment 6: Google Analytics 4 — emitted only in production builds
+# (baseof.html wraps the GA partial in a hugo.IsProduction guard)
+[services.googleAnalytics]
+  ID = "G-Q3T0426WLM"
+
+# --- Increment 7: giscus comments (GitHub Discussions)
+# Rendered by layouts/_partials/comments.html; production-only + config-gated
+[params.giscus]
+  repo = "gpunee/pg-blog"
+  repoId = "R_kgDOQ0ZlPw"
+  category = "Announcements"
+  categoryId = "DIC_kwDOQ0ZlP84DAc80"
+  mapping = "pathname"
+  reactionsEnabled = "1"
+  theme = "preferred_color_scheme"

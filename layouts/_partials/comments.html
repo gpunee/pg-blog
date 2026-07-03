@@ -1,0 +1,27 @@
+{{/* giscus comments (GitHub Discussions).
+     Rendered only in production builds AND only when configured, so `hugo server`
+     dev previews and any build with [params.giscus] removed stay clean. */}}
+{{ with .Site.Params.giscus }}
+  {{ if and hugo.IsProduction .repoId }}
+  <section class="mt5 pt4 bt b--moon-gray" aria-label="Comments">
+    <h2 class="f4 fw6 mb3">Comments</h2>
+    <script src="https://giscus.app/client.js"
+      data-repo="{{ .repo }}"
+      data-repo-id="{{ .repoId }}"
+      data-category="{{ .category }}"
+      data-category-id="{{ .categoryId }}"
+      data-mapping="{{ .mapping | default "pathname" }}"
+      data-strict="1"
+      data-reactions-enabled="{{ .reactionsEnabled | default "1" }}"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="{{ .theme | default "preferred_color_scheme" }}"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async>
+    </script>
+    <noscript>Please enable JavaScript to view the comments powered by giscus.</noscript>
+  </section>
+  {{ end }}
+{{ end }}

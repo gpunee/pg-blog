@@ -1,6 +1,28 @@
 [build]
-  command = "hugo"
+  # --gc cleans unused cache resources; --minify shrinks HTML/CSS/JS/XML
+  command = "hugo --gc --minify"
   publish = "public"
 
 [build.environment]
   HUGO_VERSION = "0.154.2"
+  # Hugo treats a bare `hugo` build as production; make it explicit
+  HUGO_ENV = "production"
+
+# Security headers for every route. No Content-Security-Policy yet: a strict CSP
+# must allowlist giscus.app, GitHub avatars, and Google Analytics or the embeds
+# break — deferred as a report-only follow-up (see PLAN.md §3a).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Static images are owner-controlled and change rarely — cache for a week.
+# (Theme CSS is intentionally NOT long-cached: ananke does not fingerprint it,
+# so an immutable cache would serve stale styles after a theme update.)
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
