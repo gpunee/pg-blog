@@ -1,0 +1,22 @@
+{{- /*
+  Search index for the client-side search page (see docs/plans/sections-tags-search.md §3.3).
+  Emits a JSON array, one object per regular post in the "posts" section:
+  { title, url, date, summary, tags, categories, content }.
+  Built as a slice of dicts and passed through jsonify so escaping is correct —
+  never hand-concatenated.
+*/ -}}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+{{- $index := slice -}}
+{{- range $posts -}}
+  {{- $entry := dict
+    "title" .Title
+    "url" .RelPermalink
+    "date" (.Date.Format "2006-01-02")
+    "summary" (.Summary | transform.Plainify)
+    "tags" (.Params.tags | compare.Default slice)
+    "categories" (.Params.categories | compare.Default slice)
+    "content" .Plain
+  -}}
+  {{- $index = $index | append $entry -}}
+{{- end -}}
+{{- $index | jsonify -}}

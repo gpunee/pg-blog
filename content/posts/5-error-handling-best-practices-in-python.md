@@ -4,12 +4,11 @@ date: 2026-07-03
 description: "EAFP over LGBYL, catching narrow exceptions, exception chaining, custom exception hierarchies, context managers, and when to return a result instead of raising in Python."
 tags:
   - Python
-  - Software Engineering
   - Error Handling
-  - Best Practices
   - Exceptions
-categories:
   - Software Engineering
+categories:
+  - Python
 draft: false
 ---
 

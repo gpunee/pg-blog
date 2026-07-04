@@ -2,8 +2,14 @@
 title: "Why Java Still Matters Today (Even in the Age of New Languages)"
 date: 2026-01-05
 description: "With Go, Rust, Python, and JavaScript dominating headlines, is Java still relevant? A deep dive into why Java continues to matter in modern software development."
-tags: ["Java", "Programming Languages", "Software Engineering", "Backend", "JVM"]
-categories: ["Technology"]
+tags:
+  - Java
+  - JVM
+  - Programming Languages
+  - Backend
+  - Software Engineering
+categories:
+  - Java
 draft: false
 ---
 

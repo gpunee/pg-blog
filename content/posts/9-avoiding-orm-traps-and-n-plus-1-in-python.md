@@ -4,12 +4,13 @@ date: 2026-07-03
 description: "The N+1 query problem in SQLAlchemy and the Django ORM — eager loading with selectinload/joinedload and select_related/prefetch_related, projections, and pagination pitfalls."
 tags:
   - Python
-  - Database
+  - Databases
+  - ORM
   - SQLAlchemy
   - Django
   - Performance
 categories:
-  - Database
+  - Python
 draft: false
 ---
 

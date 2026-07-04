@@ -27,13 +27,32 @@ enableRobotsTXT = true
     url = "/"
     weight = 1
   [[menu.main]]
+    name = "Java"
+    url = "/categories/java/"
+    weight = 2
+  [[menu.main]]
+    name = "Python"
+    url = "/categories/python/"
+    weight = 3
+  [[menu.main]]
     name = "Posts"
     url = "/posts/"
-    weight = 2
+    weight = 4
   [[menu.main]]
     name = "About"
     url = "/about/"
-    weight = 3
+    weight = 5
+  [[menu.main]]
+    name = "Search"
+    url = "/search/"
+    weight = 6
+
+# Increment 2: emit a JSON search index alongside the home page's HTML/RSS
+# (client-side search reads this at /index.json; RSS is kept so the home feed
+# still works — see docs/plans/sections-tags-search.md §3.3). Scoped to `home`
+# only so other output formats (sitemap, RSS on other kinds, etc.) are unaffected.
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
 
 [markup]
   [markup.highlight]

@@ -7,9 +7,8 @@ tags:
   - AI
   - LLM
   - Anthropic
-  - Best Practices
 categories:
-  - AI
+  - Python
 draft: false
 ---
 

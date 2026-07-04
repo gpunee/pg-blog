@@ -4,12 +4,11 @@ date: 2026-07-03
 description: "Checked vs unchecked exceptions, failing fast, wrapping and enriching errors, and using Optional and Result-style types to make invalid states unrepresentable in Java."
 tags:
   - Java
-  - Software Engineering
   - Error Handling
-  - Best Practices
   - Exceptions
-categories:
   - Software Engineering
+categories:
+  - Java
 draft: false
 ---
 

@@ -7,9 +7,8 @@ tags:
   - JVM
   - Kotlin
   - Scala
-  - Programming Languages
 categories:
-  - Technology
+  - Java
 draft: false
 ---
 

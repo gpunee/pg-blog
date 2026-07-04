@@ -4,12 +4,11 @@ date: 2026-07-03
 description: "Multi-stage builds, layered JARs, slim JRE base images, running as non-root, JVM container-awareness, and health checks — how to ship small, secure, fast-starting Java containers."
 tags:
   - Java
-  - DevOps
   - Docker
-  - Containers
-  - Best Practices
-categories:
   - DevOps
+  - Containers
+categories:
+  - Java
 draft: false
 ---
 

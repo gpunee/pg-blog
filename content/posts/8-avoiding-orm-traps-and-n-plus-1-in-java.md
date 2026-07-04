@@ -4,12 +4,13 @@ date: 2026-07-03
 description: "The N+1 query problem, lazy vs eager loading, fetch joins and entity graphs, projections, and pagination pitfalls in JPA and Hibernate — with the SQL each one actually generates."
 tags:
   - Java
-  - Database
+  - Databases
+  - ORM
   - JPA
   - Hibernate
   - Performance
 categories:
-  - Database
+  - Java
 draft: false
 ---
 

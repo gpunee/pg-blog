@@ -4,12 +4,11 @@ date: 2026-07-03
 description: "Slim base images, multi-stage builds with virtual environments, layer-cached dependency installs, running as non-root, and correct signal handling for small, secure Python containers."
 tags:
   - Python
-  - DevOps
   - Docker
-  - Containers
-  - Best Practices
-categories:
   - DevOps
+  - Containers
+categories:
+  - Python
 draft: false
 ---
 

@@ -4,12 +4,12 @@ date: 2026-01-06
 description: "How Java adapted to cloud-native architectures, microservices, containers, and Kubernetes — and why it still thrives in distributed systems."
 tags:
   - Java
-  - Microservices
   - Cloud
-  - Spring Boot
+  - Microservices
   - Kubernetes
+  - Architecture
 categories:
-  - Technology
+  - Java
 draft: false
 ---
 
