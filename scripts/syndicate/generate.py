@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 
 from syndicate.posts import Post
+from syndicate.transform import extract_table_sections, table_to_bullets
 
 MEDIUM_IMPORT_URL = "https://medium.com/p/import"
 
@@ -40,13 +41,19 @@ def medium_import_list(posts: list[Post]) -> str:
         "`pg-blogs.netlify.app`, so the Medium copy never competes with the original in "
         "search results.",
         "",
+        "Medium's editor has no table support, so any Markdown table in a post (checklists, "
+        "anti-pattern/trade-off tables) imports blank. Each post's tables are provided as "
+        "paste-ready bullet lists under `medium-checklists/<slug>.md` — paste those in place "
+        "of the blank section.",
+        "",
         "## Steps (repeat for each post below)",
         "",
         f"1. Go to [{MEDIUM_IMPORT_URL}]({MEDIUM_IMPORT_URL}).",
         "2. Paste the post's canonical URL from the table below into the importer.",
         "3. Click **Import**.",
-        "4. Review the imported draft — check headings, code blocks, and images render "
-        "correctly.",
+        "4. Review the imported draft — check headings, code, and images render correctly; "
+        "the checklist/table sections import blank on Medium — paste the bullet-list version "
+        "from `medium-checklists/<slug>.md` in their place.",
         "5. Click **Publish**.",
         "",
         "## Posts",
@@ -58,6 +65,36 @@ def medium_import_list(posts: list[Post]) -> str:
         lines.append(f"| {index} | {post.title} | [{post.canonical_url}]({post.canonical_url}) |")
     lines.append("")
     return "\n".join(lines)
+
+
+def medium_checklist_snippets(post: Post) -> str:
+    """Markdown for `syndication/medium-checklists/<slug>.md`: every Markdown
+    table in the post's body, converted to a Medium-friendly bullet list,
+    paired with its section heading — for pasting into the imported Medium
+    draft where the table came through blank.
+
+    Returns `""` if the post has no tables (the CLI skips writing a file).
+    """
+    sections = extract_table_sections(post.body_markdown)
+    if not sections:
+        return ""
+
+    lines = [f"# {post.title}", "", f"Canonical: {post.canonical_url}", ""]
+
+    for index, (heading, table) in enumerate(sections, start=1):
+        if heading:
+            label = heading
+        elif len(sections) == 1:
+            label = "Checklist"
+        else:
+            label = f"Table {index}"
+
+        lines.append(f"**{label}**")
+        lines.append("")
+        lines.append(table_to_bullets(table))
+        lines.append("")
+
+    return "\n".join(lines).rstrip("\n") + "\n"
 
 
 def _hashtags(tags: list[str], limit: int = _MAX_HASHTAGS) -> list[str]:

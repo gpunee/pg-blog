@@ -257,6 +257,25 @@ def test_medium_writes_import_list_with_all_posts(monkeypatch, capsys, syndicati
     assert "2" in capsys.readouterr().out
 
 
+def test_medium_writes_checklist_for_post_with_table_only(monkeypatch, capsys, syndication_dir):
+    table_post = _post(slug="1-foo")
+    table_post.body_markdown = (
+        "## Checklist\n\n| a | b |\n|---|---|\n| x | y |\n"
+    )
+    no_table_post = _post(
+        slug="2-bar", canonical="https://pg-blogs.netlify.app/posts/2-bar/"
+    )
+    monkeypatch.setattr(cli, "load_posts", lambda: [table_post, no_table_post])
+
+    exit_code = cli.main(["medium"])
+
+    checklists_dir = syndication_dir / "medium-checklists"
+    assert exit_code == 0
+    assert (checklists_dir / "1-foo.md").is_file()
+    assert not (checklists_dir / "2-bar.md").exists()
+    assert "1 Medium checklist file" in capsys.readouterr().out
+
+
 def test_teasers_writes_one_file_per_post(monkeypatch, capsys, syndication_dir):
     posts = [_post(slug="1-foo"), _post(slug="2-bar", canonical="https://pg-blogs.netlify.app/posts/2-bar/")]
     monkeypatch.setattr(cli, "load_posts", lambda: posts)

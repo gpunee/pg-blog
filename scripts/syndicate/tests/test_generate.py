@@ -1,4 +1,4 @@
-from syndicate.generate import medium_import_list, teaser
+from syndicate.generate import medium_checklist_snippets, medium_import_list, teaser
 from syndicate.posts import Post
 
 
@@ -54,6 +54,41 @@ def test_medium_import_list_explains_manual_canonical_behavior():
 
     assert "no write API" in result or "write API" in result
     assert "canonical" in result.lower()
+
+
+def test_medium_import_list_mentions_table_checklists():
+    result = medium_import_list([_java_post()])
+
+    assert "table" in result.lower()
+    assert "medium-checklists" in result
+
+
+# --- medium_checklist_snippets ---------------------------------------------------
+
+
+def test_medium_checklist_snippets_empty_for_table_less_post():
+    post = _java_post(body_markdown="Just prose, no tables here.")
+    assert medium_checklist_snippets(post) == ""
+
+
+def test_medium_checklist_snippets_includes_heading_and_bullets():
+    post = _java_post(
+        body_markdown=(
+            "## Practical Checklist\n\n"
+            "| Practice | Why it matters |\n"
+            "|----------|----------------|\n"
+            "| Match model tier | Don't overpay |\n"
+            "| Cache prefixes | Lower cost |\n"
+        )
+    )
+    result = medium_checklist_snippets(post)
+
+    assert post.title in result
+    assert f"Canonical: {post.canonical_url}" in result
+    assert "**Practical Checklist**" in result
+    assert "- **Match model tier** — Don't overpay" in result
+    assert "- **Cache prefixes** — Lower cost" in result
+    assert "|" not in result
 
 
 # --- teaser --------------------------------------------------------------------

@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 from syndicate.devto import DevToClient, DevToError
-from syndicate.generate import medium_import_list, teaser
+from syndicate.generate import medium_checklist_snippets, medium_import_list, teaser
 from syndicate.payload import build_devto_article
 from syndicate.posts import Post, load_posts
 from syndicate.state import load_state, save_state
@@ -153,8 +153,19 @@ def cmd_medium(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "medium-import-list.md"
     output_path.write_text(medium_import_list(posts))
-
     print(f"Wrote {output_path} ({len(posts)} post(s)).")
+
+    checklists_dir = output_dir / "medium-checklists"
+    checklist_count = 0
+    for post in posts:
+        snippet = medium_checklist_snippets(post)
+        if not snippet:
+            continue
+        checklists_dir.mkdir(parents=True, exist_ok=True)
+        (checklists_dir / f"{post.slug}.md").write_text(snippet)
+        checklist_count += 1
+
+    print(f"Wrote {checklist_count} Medium checklist file(s) to {checklists_dir}/.")
     return 0
 
 

@@ -1,4 +1,10 @@
-from syndicate.transform import rewrite_cross_links, strip_shortcodes, to_portable_markdown
+from syndicate.transform import (
+    extract_table_sections,
+    rewrite_cross_links,
+    strip_shortcodes,
+    table_to_bullets,
+    to_portable_markdown,
+)
 
 
 # --- rewrite_cross_links -----------------------------------------------------
@@ -116,3 +122,108 @@ def test_to_portable_markdown_end_to_end():
     assert '"{{< leave me alone >}}"' in cleaned  # code block untouched
     assert "{{< note >}}" not in cleaned  # stray shortcode stripped
     assert warnings == ["{{< note >}}"]
+
+
+# --- table_to_bullets ----------------------------------------------------------
+
+
+def test_table_to_bullets_one_column():
+    table = "| Practice |\n|----------|\n| Match model tier |\n| Cache large prefixes |"
+    result = table_to_bullets(table)
+    assert result == "- Match model tier\n- Cache large prefixes"
+    assert "|" not in result
+
+
+def test_table_to_bullets_two_columns():
+    table = (
+        "| Practice | Why it matters |\n"
+        "|----------|----------------|\n"
+        "| Match model tier to task difficulty | Don't overpay or under-provision |\n"
+        "| Cache large shared prefixes | Lower cost and latency |"
+    )
+    result = table_to_bullets(table)
+    assert result == (
+        "- **Match model tier to task difficulty** — Don't overpay or under-provision\n"
+        "- **Cache large shared prefixes** — Lower cost and latency"
+    )
+    assert "|" not in result
+
+
+def test_table_to_bullets_three_columns():
+    table = (
+        "| Approach | Pros | Cons |\n"
+        "|----------|------|------|\n"
+        "| Retry | Simple | Can amplify load |"
+    )
+    result = table_to_bullets(table)
+    assert result == "- **Retry** — Pros: Simple; Cons: Can amplify load"
+    assert "|" not in result
+
+
+def test_table_to_bullets_preserves_inline_formatting():
+    table = (
+        "| Practice | Why it matters |\n"
+        "|----------|----------------|\n"
+        "| Use `structured outputs` | See [docs](https://example.com) for **details** |"
+    )
+    result = table_to_bullets(table)
+    assert "`structured outputs`" in result
+    assert "[docs](https://example.com)" in result
+    assert "**details**" in result
+    assert result.startswith("- **Use `structured outputs`** — ")
+
+
+# --- extract_table_sections -----------------------------------------------------
+
+
+def test_extract_table_sections_pairs_nearest_preceding_heading():
+    md = (
+        "Some intro text.\n\n"
+        "## Practical Checklist\n\n"
+        "| Practice | Why it matters |\n"
+        "|----------|----------------|\n"
+        "| Match model tier | Don't overpay |\n\n"
+        "Some more prose.\n"
+    )
+    sections = extract_table_sections(md)
+    assert len(sections) == 1
+    heading, table = sections[0]
+    assert heading == "Practical Checklist"
+    assert "Match model tier" in table
+
+
+def test_extract_table_sections_returns_tables_in_document_order():
+    md = (
+        "## First\n\n"
+        "| a |\n|---|\n| 1 |\n\n"
+        "### Second\n\n"
+        "| b |\n|---|\n| 2 |\n"
+    )
+    sections = extract_table_sections(md)
+    assert [heading for heading, _ in sections] == ["First", "Second"]
+    assert "| 1 |" in sections[0][1]
+    assert "| 2 |" in sections[1][1]
+
+
+def test_extract_table_sections_no_heading_yields_none():
+    md = "| a |\n|---|\n| 1 |\n"
+    sections = extract_table_sections(md)
+    assert len(sections) == 1
+    assert sections[0][0] is None
+
+
+def test_extract_table_sections_ignores_table_inside_fenced_code_block():
+    md = (
+        "## Real Table\n\n"
+        "| a |\n|---|\n| 1 |\n\n"
+        "```\n"
+        "| fake | table |\n"
+        "|------|-------|\n"
+        "| in a | fence |\n"
+        "```\n"
+    )
+    sections = extract_table_sections(md)
+    assert len(sections) == 1
+    assert sections[0][0] == "Real Table"
+    assert "1" in sections[0][1]
+    assert "fake" not in sections[0][1]

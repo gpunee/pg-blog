@@ -168,3 +168,64 @@ won't double-post). New → `create`; known → `update`. This makes re-runs saf
 - **Unchanged:** all `content/`, `hugo.toml`, layouts, the Hugo build and live site.
 - **External:** creates/updates **drafts** on the owner's Dev.to account only when run with a key;
   going live requires `--publish`. Medium/social steps are manual by design.
+
+## 8. Increment 04 — Medium table fix (paste-ready checklist snippets)   <!-- DONE 2026-07-04: 71 tests green, 23 checklist files; evidence increment-syndication-05-medium-table-fix.md -->
+
+> **As built (Medium fix):** shipped exactly as designed — `table_to_bullets` (1/2/N-col, header
+> labels for N>2, inline formatting preserved) + `extract_table_sections` (fence-aware) in
+> `transform.py`; `medium_checklist_snippets` in `generate.py`; `cli.py medium` writes
+> `scripts/syndication/medium-checklists/<slug>.md` (23 files). Headingless-table label = `Checklist`
+> if sole table else `Table N` (synthetic-test-only; no real post lacks a heading). No canonical
+> site / Dev.to change.
+
+**Problem (owner-reported, 2026-07-04):** Medium's Import-by-URL tool does not support HTML
+`<table>` elements (Medium's editor has never had tables). Posts render their "Practical Checklist"
+/ "Anti-Patterns" / trade-off sections as Markdown tables, so on Medium import those sections come
+in **blank or as stray image fragments**. Confirmed: 23 posts contain Markdown tables. The tables
+are correct on the canonical site and on Dev.to (which supports tables) — **only the Medium path is
+affected, and only the site/Dev.to output must stay unchanged.**
+
+**Decision (owner, Phase 3):** surgical snippet approach — keep the import-by-URL workflow; the
+`medium` command additionally emits, per post, every table converted to a Medium-supported **bullet
+list** to paste into the imported draft where the table came through blank. No change to the site,
+to Dev.to, or to the canonical tables.
+
+### 8.1 Design
+- **`transform.py` (new pure fns):**
+  - `table_to_bullets(table_md: str) -> str` — convert one GFM table to a bullet list. 2-col row
+    `| a | b |` → `- **a** — b`; N>2-col → `- **c1** — <h2>: c2; <h3>: c3` (header labels for cols
+    2..N); 1-col → `- c1`. Inline Markdown in cells (bold, `code`, links) preserved verbatim.
+  - `extract_table_sections(body_md: str) -> list[tuple[str|None, str]]` — return, in document
+    order, each Markdown table in the body paired with its nearest preceding `##`/`###` heading
+    text (or `None`). **Tables inside fenced code blocks are ignored** (reuse the `_FENCED_CODE_RE`
+    fence-split already in this module).
+- **`generate.py` (new fn):** `medium_checklist_snippets(post: Post) -> str` — for each table
+  section, emit `**<heading>**` (or a generic label if headingless) followed by
+  `table_to_bullets(...)`, separated by blank lines; also prepend the post title + canonical URL
+  line. Returns `""` if the post has no tables (CLI skips writing an empty file).
+- **`generate.py` `medium_import_list`:** add a sentence that Medium drops tables and that each
+  post's tables are provided as paste-ready bullet lists under `medium-checklists/<slug>.md`; revise
+  step 4 to "review headings/code/images; the checklist/table sections import blank on Medium — paste
+  the bullet-list version from `medium-checklists/<slug>.md` in their place."
+- **`cli.py` `medium` subcommand:** in addition to `medium-import-list.md`, write
+  `scripts/syndication/medium-checklists/<slug>.md` for every post whose `medium_checklist_snippets`
+  is non-empty. Still no network, pure generation into the gitignored `scripts/syndication/`.
+
+### 8.2 Security & non-functional
+- Pure string transforms; no network, no secrets, no new deps. Output stays in the gitignored
+  `scripts/syndication/`. §3a posture unchanged (this path never touches a key).
+
+### 8.3 Gate (§4.1-equivalent)
+- New unit tests (pytest): `table_to_bullets` for 1/2/N-col + inline-formatting-preserved; a table
+  inside a ```code fence is **not** converted; `extract_table_sections` pairs the right heading and
+  skips fenced tables; `medium_checklist_snippets` returns `""` for a table-less post and includes
+  the section heading otherwise. Whole suite (existing 59 + new) green.
+- Acceptance against the real posts: `run.sh medium` writes `medium-checklists/*.md`; spot-check that
+  a known checklist (e.g. post 10's "Practical Checklist") appears as a correct bullet list with one
+  bullet per row and no `|` pipes; confirm a code-fenced table (if any) was not mangled.
+- Evidence `docs/evidence/increment-syndication-05-medium-table-fix.md` with `Gate status: PASS`.
+
+### 8.4 Impact
+- **Changed:** `scripts/syndicate/transform.py`, `generate.py`, `cli.py`, `tests/`. **New generated
+  (gitignored):** `scripts/syndication/medium-checklists/<slug>.md`. **Unchanged:** all `content/`,
+  the Hugo site, Dev.to path, canonical tables.
