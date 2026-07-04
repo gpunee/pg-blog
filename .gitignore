@@ -12,3 +12,14 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Syndication tool (Python) — venv + local secrets
+scripts/syndicate/venv/
+scripts/syndicate/.env
+
+# Python bytecode cache (standard hygiene, not project-specific)
+__pycache__/
+*.pyc
+
+# Syndication generated output (regenerable via `run.sh medium` / `run.sh teasers`)
+scripts/syndication/

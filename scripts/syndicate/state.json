@@ -1,0 +1,21 @@
+{
+  "1-why-java-still-matters-today": 4067810,
+  "10-building-reliable-llm-apps-in-python": 4067820,
+  "11-building-reliable-llm-apps-in-java": 4067821,
+  "12-designing-for-change-in-java": 4067822,
+  "13-designing-for-change-in-python": 4067823,
+  "14-building-agentic-workflows-in-java": 4067825,
+  "15-building-agentic-workflows-in-python": 4067826,
+  "16-testing-best-practices-in-java": 4067827,
+  "17-testing-best-practices-in-python": 4067828,
+  "18-database-indexing-and-query-optimization-for-java": 4067829,
+  "19-database-indexing-and-query-optimization-for-python": 4067830,
+  "2-java-in-the-age-of-cloud-and-microservices": 4067811,
+  "3-java-and-the-jvm-ecosystem": 4067813,
+  "4-error-handling-best-practices-in-java": 4067814,
+  "5-error-handling-best-practices-in-python": 4067815,
+  "6-production-grade-docker-images-for-java": 4067816,
+  "7-production-grade-docker-images-for-python": 4067817,
+  "8-avoiding-orm-traps-and-n-plus-1-in-java": 4067818,
+  "9-avoiding-orm-traps-and-n-plus-1-in-python": 4067819
+}
