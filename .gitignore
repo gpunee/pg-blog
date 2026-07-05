@@ -23,3 +23,6 @@ __pycache__/
 
 # Syndication generated output (regenerable via `run.sh medium` / `run.sh teasers`)
 scripts/syndication/
+
+# Project-local operating manual — intentionally untracked (per owner)
+/CLAUDE.md
