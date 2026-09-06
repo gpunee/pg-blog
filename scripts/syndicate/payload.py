@@ -27,3 +27,36 @@ def build_devto_article(post: Post, publish: bool) -> dict:
         "description": post.description,
         "tags": devto_tags(post.tags),
     }
+
+
+def build_linkedin_share(
+    post: Post, author_urn: str, commentary: str, visibility: str = "PUBLIC"
+) -> dict:
+    """Return the `ugcPosts` ARTICLE-share payload dict for a LinkedIn create call.
+
+    `commentary` is the already-resolved human text (see
+    `generate.resolve_linkedin_commentary`) — it must NOT already contain the
+    canonical link. This function always appends `post.canonical_url` to the
+    commentary and sets the ARTICLE preview card, so the caller never has to
+    think about the link or the card.
+    """
+    text = f"{commentary.rstrip()}\n\n{post.canonical_url}"
+    return {
+        "author": author_urn,
+        "lifecycleState": "PUBLISHED",
+        "specificContent": {
+            "com.linkedin.ugc.ShareContent": {
+                "shareCommentary": {"text": text},
+                "shareMediaCategory": "ARTICLE",
+                "media": [
+                    {
+                        "status": "READY",
+                        "originalUrl": post.canonical_url,
+                        "title": {"text": post.title},
+                        "description": {"text": post.description},
+                    }
+                ],
+            }
+        },
+        "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": visibility},
+    }

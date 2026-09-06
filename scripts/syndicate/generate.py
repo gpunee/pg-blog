@@ -7,6 +7,7 @@ no filesystem writes — the CLI owns writing to `syndication/`.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 from syndicate.posts import Post
 from syndicate.transform import extract_table_sections, table_to_bullets
@@ -182,3 +183,32 @@ def teaser(post: Post) -> str:
         "",
     ]
     return "\n".join(lines)
+
+
+def linkedin_commentary(post: Post) -> str:
+    """The generated fallback commentary for a LinkedIn share: the
+    `_linkedin_hook` text only — no canonical URL (`build_linkedin_share`
+    appends that). Reuses `_linkedin_hook` so the hook has one source of
+    truth; `teaser()` above is not modified.
+    """
+    return _linkedin_hook(post)
+
+
+def resolve_linkedin_commentary(post: Post, sidecar_dir: Path) -> str:
+    """Resolve the human commentary for a LinkedIn share: an owner-authored
+    sidecar override wins if present and non-empty, else the generated
+    fallback (`linkedin_commentary`).
+
+    `sidecar_dir` is injected (not hardcoded) so this is unit-testable
+    against a `tmp_path`; the CLI supplies the real, committed directory.
+    The sidecar is untrusted external input at this boundary: read as UTF-8
+    and `.strip()`-checked for emptiness — a missing, empty, or
+    whitespace-only sidecar falls back rather than posting a blank
+    commentary.
+    """
+    sidecar_path = sidecar_dir / f"{post.slug}.md"
+    if sidecar_path.is_file():
+        override = sidecar_path.read_text(encoding="utf-8").strip()
+        if override:
+            return override
+    return linkedin_commentary(post)
